@@ -1,0 +1,65 @@
+<!-- HELP OVERLAY -->
+<div id="helpOverlay" hidden>
+    <div class="help-box">
+      <!-- Заголовок вынесен наверх, вне scrollable-контента -->
+      <h2 class="i18n" data-en="How to Play" data-ru="Как играть">Как играть</h2>
+  
+      <div class="help-content">
+        <ul id="helpBullets" class="i18n"
+            data-en="
+              <li><span style='color:#e11;'><strong>Red</strong></span> are enemies. <span style='color:#1e1;'><strong>Green</strong></span> are ours.</li>
+              <li>Life of each cell depends on the number of neighbors:
+                <ul style='margin: 0; padding-left: 1em;'>
+                  <li><span style='color:#9ce;'><strong>0–1</strong> — lonely death</span></li>
+                  <li><span style='color:#fff;'><strong>2–3</strong> — survives</span></li>
+                  <li><span style='color:#dd9;'><strong>4–8</strong> — overpopulation death</span></li>
+                  <li><span style='color:#1e1;'><strong>3</strong> — new cell is born</span></li>
+                  <li>An enemy counts as <span style='color:#e11;'><strong>−1</strong></span></li>
+                </ul>
+              </li>
+              <li>Hold down an empty cell with your mouse or finger to place a cell from the reserve (where there are no more enemies than friends).</li>
+              <li>The larger the swarm, the higher the income, but returns diminish as it grows.</li>
+              <li>Income comes in waves; each subsequent wave is slower — comebacks are possible. Watch the compass.</li>
+              <li>The longer the battle drags on, reinforcements are rarer but arrive in greater numbers — hope lives on.</li>
+              <li>Hotkeys <strong>1–5</strong> change game speed.</li>"
+            data-ru="
+              <li><span style='color:#e11;'><strong>Красные</strong></span> — враги. <span style='color:#1e1;'><strong>Зеленые</strong></span> — наши.</li>
+              <li>Жизнь каждой клетки зависит от числа соседей:
+                <ul style='margin: 0; padding-left: 1em;'>
+                  <li><span style='color:#9ce;'><strong>0–1</strong> — умирает от одиночества</span></li>
+                  <li><span style='color:#fff;'><strong>2–3</strong> — продолжает жить</span></li>
+                  <li><span style='color:#dd9;'><strong>4–8</strong> — умирает от перенаселения</span></li>
+                  <li><span style='color:#1e1;'><strong>3</strong> — рождение новой клетки</span></li>
+                  <li>Враг считается как <span style='color:#e11;'><strong>−1</strong></span></li>
+                </ul>
+              </li>
+              <li>Зажмите мышью или пальцем пустую ячейку, чтобы поставить там клетку из резерва (там где врагов не больше чем друзей).</li>
+              <li>Чем больше рой, тем выше доход, но отдача снижается по мере роста.</li>
+              <li>Доход идёт волнами; каждая следующая волна медленнее — камбэк возможен. Следите за компасом.</li>
+              <li>Чем дольше битва длится, тем реже, но массовее подкрепления — надежда живёт.</li>
+              <li>Горячие клавиши <strong>1–5</strong> изменяют скорость игры.</li>">
+        </ul>
+  
+        <button id="closeHelp" type="button" class="i18n" data-en="Close" data-ru="Закрыть">ОК</button>         
+      </div>
+    </div>
+  </div>
+  
+
+<!-- GAME OVER -->
+<div id="gameOverScreen" hidden>
+    <h1 id="gameOverMessage" data-en="YOU WIN" data-ru="ВЫ ПОБЕДИЛИ"></h1>
+    <button id="menuButton" data-en="Go to Menu" data-ru="В меню"></button>
+</div>
+
+<!-- OVERWRITE CONFIRMATION -->
+<div id="overwriteModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+    <p class="i18n" data-en="A saved game exists.&nbsp;Overwrite&nbsp;it?" data-ru="Есть сохранение. Перезаписать?"></p>
+    <div class="modal-buttons">
+        <button id="overwriteConfirm" data-en="Yes" data-ru="Да"></button>
+        <button id="overwriteCancel" data-en="No" data-ru="Нет"></button>
+    </div>
+    </div>
+</div>

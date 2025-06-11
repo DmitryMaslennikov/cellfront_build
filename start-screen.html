@@ -1,0 +1,98 @@
+  <!-- START MENU -->
+  <div id="launchOverlay">
+    <button id="launchBtn">PLAY</button>
+  </div>
+  <div id="startScreen">
+    <h1 data-en="CellFront" data-ru="CellFront"></h1>
+  <!-- ——— LANGUAGE SWITCHER ——— -->
+  <div id="langBar">
+    <select id="langSwitch" title="Language">
+      <option value="en">EN</option>
+      <option value="ru">RU</option>
+    </select>
+  </div>
+    <div class="slider-group">
+      <label for="difficultySlider">
+        <span class="i18n tooltip" data-en="Difficulty:" data-ru="Сложность:"
+        data-en-tip="Enemy income and strength of their allies relative to the player."
+        data-ru-tip="Доход врага и сила его союзников по отношению к игроку."> </span>
+        <span id="difficultyValue" class="valueText">0%</span>
+        <span id="difficultyLevel" class="levelText"></span>
+      </label>
+      <input
+        type="range"
+        id="difficultySlider"
+        class="slider"
+        min="0" max="200" step="5"
+        value="0">
+    </div>
+
+ 
+    <div class="slider-group">
+      <label for="breathSlider">
+        <span class="i18n tooltip" data-en="Resource Wave:" data-ru="Волна ресурсов:"
+        data-en-tip="Income comes in waves. Each wave lasts longer than the previous one."
+        data-ru-tip="Волны дохода. Каждая волна дольше предыдущей."></span>
+        <span id="breathValue" class="valueText">0%</span>
+        <span id="breathLevel" class="levelText"></span>
+      </label>
+      <input
+        type="range"
+        id="breathSlider"
+        class="slider"
+        min="0" max="100" step="5"
+        value="0">
+    </div>
+    
+    <div class="slider-group">
+      <label for="reinforcementsSlider">
+        <span class="i18n tooltip" data-en="Allies support:" data-ru="Союзники:"
+        data-en-tip="Reinforcements are sent. They come less often but grow stronger over time. The weaker side gets more"
+        data-ru-tip="Присылают подкрепления. Со временем — реже, но мощнее. Слабая сторона получает больше."></span>
+        <span id="reinforcementsValue" class="valueText">0%</span>
+        <span id="reinforcementsLevel" class="levelText"></span>
+      </label>
+      <input
+        type="range"
+        id="reinforcementsSlider"
+        class="slider"
+        min="0" max="100" step="5"
+        value="0">
+    </div>
+
+    <!-- Grid size options -->
+    <div class="grid-size-options">
+      <label>
+        <input type="radio" name="gridSize" value="12x18" checked>
+        <span class="option option-small">
+          12×18<br><small data-en="Small" data-ru="Малое"></small>
+        </span>
+      </label>
+      <label>
+        <input type="radio" name="gridSize" value="18x27">
+        <span class="option option-medium">
+          18×27<br><small data-en="Medium" data-ru="Среднее"></small>
+        </span>
+      </label>
+      <label>
+        <input type="radio" name="gridSize" value="24x36">
+        <span class="option option-large">
+          24×36<br><small data-en="Large" data-ru="Большое"></small>
+        </span>
+      </label>
+      <label>
+        <input type="radio" name="gridSize" value="30x45">
+        <span class="option option-xlarge">
+          30×45<br><small data-en="Huge" data-ru="Огромное"></small>
+        </span>
+      </label>
+    </div>
+    
+    <!-- Mode Buttons -->
+    <div id="modeButtons">
+      <button id="startBtn" data-en="New&nbsp;Game" data-ru="Новая&nbsp;игра"></button>
+      <button id="resumeBtn" data-en="Resume" data-ru="Продолжить"></button>
+      <button id="howBtn" data-en="Help" data-ru="Помощь"></button>
+    </div>
+    </div>
+  </div>

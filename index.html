@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CellFront: Modified Conway's Life</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+  
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- CSS стили теперь загружаются через main.js для корректной сборки -->
+  <!-- <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/bonuses.css"> -->
+  
+  <style>
+    /* a tiny helper so the switcher always shows */
+    #langBar{
+      position:fixed;top:0.5rem;right:0.5rem;z-index:4000;
+      font-family:Montserrat,Arial,Helvetica,sans-serif;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/main-n5I14nxv.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/style-CdfBVhEq.css">
+</head>
+<body>
+  <div id="startScreenBlock"></div>
+  
+  <!-- GAME SCREEN -->
+  <div id="gameScreen">
+    <div id="fieldWrapper">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <aside id="sidebar">
+      <section class="widget">
+        <h2 data-en="YOU" data-ru="ВЫ"></h2>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="playerOnField"
+                data-en="On Field"
+                data-ru="На поле"
+                data-en-tip="Number of your cells on the field"
+                data-ru-tip="Количество ваших клеток на поле">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="playerReserve"
+                data-en="Reserve"
+                data-ru="Резерв"
+                data-en-tip="Number of cells you can place"
+                data-ru-tip="Число клеток, которые вы можете поставить">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="playerIncome"
+                data-en="Income"
+                data-ru="Доход"
+                data-en-tip="Your income per second"
+                data-ru-tip="Ваш доход в секунду">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="playerAlly"
+                data-en="Allies"
+                data-ru="Союзники"
+                data-en-tip="Number of ally cells going to your reserve"
+                data-ru-tip="Количество союзных клеток, поступящих в ваш резерв">0</span>
+        </label>
+      </section>
+      <section class="widget">
+        <h2 data-en="AI" data-ru="ИИ"></h2>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="enemyOnField"
+                data-en="On Field"
+                data-ru="На поле"
+                data-en-tip="Number of your cells on the field"
+                data-ru-tip="Количество ваших клеток на поле">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="enemyReserve"
+                data-en="Reserve"
+                data-ru="Резерв"
+                data-en-tip="Number of cells enemy can put on field"
+                data-ru-tip="Число клеток, которые вы можете поставить">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="enemyIncome"
+                data-en="Income"
+                data-ru="Доход"
+                data-en-tip="Enemy income per second"
+                data-ru-tip="Доход врага в секунду">0</span>
+        </label>
+        <label class="stat-wrapper">
+          <span class="stat i18n tooltip"
+                id="enemyAlly"
+                data-en="Allies"
+                data-ru="Союзники"
+                data-en-tip="Number of ally cells going to enemy reserve"
+                data-ru-tip="Количество союзных клеток, поступящих в резерв врага">0</span>
+        </label>
+      </section>
+      <section class="widget ">
+        <h2 data-en="CARAVANS" data-ru="КАРАВАНЫ"></h2>
+        <div class="stat caravan-timer-line">
+          <span class="stat-label caravan-timer-text" id="caravanTimer"></span>
+          <button id="caravanAdButton" class="caravan-ad-button" disabled>
+            <i class="material-icons">campaign</i>
+            <i class="material-icons">local_shipping</i>
+            <span data-en="Plunder for ad" data-ru="Грабить за рекламу">
+              Грабить за рекламу
+            </span>
+          </button>
+        </div>
+        <div class="stat i18n tooltip " id="caravanAmountsLine"
+             data-en=""
+             data-ru=""
+             data-en-tip="Caravan value for you and AI"
+             data-ru-tip="Ценность каравана для вас и ИИ">
+          <!-- Содержимое генерируется динамически через JavaScript -->
+        </div>
+      </section>
+
+      <section class="widget">
+        <h2 data-en="ALLIES" data-ru="СОЮЗНИКИ"></h2>
+        <div class="stat i18n tooltip" id="timeReinforcements"
+        data-en=""
+        data-ru=""
+          data-en-tip="Allies send aid randomly, on average, at this interval."
+          data-ru-tip="Союзники присылают помощь случайно,в среднем — с таким интервалом."></div>
+        <div class="stat i18n tooltip" id="sizeReinforcements"
+        data-en=""
+        data-ru=""
+        data-en-tip="Number of ally cells available for next support."
+        data-ru-tip="Сколько союзных клеток придет.">
+        </div>
+      </section>
+
+      <section class="widget">
+        <div id="compass">
+          <h3 class="tooltip i18n " data-en="Resource Wave" data-ru="Волна ресурсов"
+          data-en=""
+          data-ru=""
+          data-en-tip="Resource wave. Shows who get more resources"
+          data-ru-tip="Волна ресурсов. Показывает кто получит больше ресурсов">
+  
+          </h3>
+          <canvas id="compassCanvas">
+          </canvas>
+        </div>
+      </section>
+
+      <section class="widget">
+        <div class="speed-controls">
+          <button data-speed="0"><i class="material-icons">pause</i></button>
+          <button data-speed="1"><i class="material-icons">play_arrow</i></button>
+          <button data-speed="2"><i class="material-icons">fast_forward</i></button>
+          <button data-speed="4"><i class="material-icons">speed</i></button>
+          <button data-speed="10"><i class="material-icons">rocket_launch</i></button>
+        </div>
+      </section>
+
+      <!-- Time + Sound + Exit -->
+      <section class="widget sound-widget">
+        <div class="stat"><span id="gameTime">00:00:00</span></div>
+        <button id="tutorialToggle" class="icon-btn">
+        <i class="material-icons">help</i></button>
+        <input type="checkbox" id="soundToggle" class="sound-toggle" checked>
+        <label for="soundToggle" class="icon-btn">
+        <i class="material-icons" aria-hidden="true"></i></label>
+        <button id="exitMenu" class="icon-btn">
+        <i class="material-icons">exit_to_app</i></button>
+      </section>
+    </aside>
+  </div>
+
+
+  <!-- ИИ НЕ ТРОГАЙ ПРОБЕЛЫ ОСОБЕННО НЕРАЗРЫВНЫЕ ТУТ! -->
+  <script id="i18n" type="application/json">
+    {
+      "en": {
+        "startScreen": {
+            "title": "CELLFRONT",
+            "startBtn": "Start",
+            "resumeBtn": "Resume",
+            "howBtn": "How to Play"
+          },
+        "sliderLevels": {
+          "difficultySlider": [
+            [0,   0,   "Idle"],
+            [1,  25,  "Training"],
+            [26, 50,  "Easy"],
+            [51, 75,  "Normal"],
+            [76,100, "Hard"],
+            [101,125,"Savage"],
+            [126,150,"Brutal"],
+            [151,175,"Sadistic"],
+            [176,200,"Nightmare"]
+          ],
+          "breathSlider": [
+            [0,  20,  "Calm"],
+            [20, 50,  "Mild"],
+            [50, 75,  "Moderate"],
+            [80,100,  "Strong"]
+          ],
+          "reinforcementsSlider": [
+            [0,   1,   "None"],
+            [1,  20,   "Sparse"],
+            [21, 50,   "Moderate"],
+            [51, 80,   "Strong"],
+            [81,100,   "Powerful"]
+          ]
+        },
+        "sidebarText": {
+          "Fld":    "On field:    ",  
+          "Income": "Income:      ",
+          "Res":    "Reserve:     ",
+          "Ally":   "From allies: ",
+          "You": "YOU:",
+          "Ai": "AI:",
+          "avgTime": "Avg. Time≈",
+          "s": "s",
+          "gameOverWin": "YOU WIN",
+          "gameOverLose": "YOU LOSE",
+          "caravan": "Caravan",
+          "resources": "resources",
+          "watchAd": "Takeover Caravan (ad)",
+          "ad": "Ad",
+          "adReward": "Get Reward",
+          "adSystemDisabled": "Ad system disabled by ad blocker",
+          "enableAdsForBonus": "Enable ads to get bonus resources",
+          "advertisementBlocked": "Advertisement Blocked",
+          "adBlockerMessage": "Your ad blocker has prevented the advertisement from displaying.",
+          "toReceiveBonus": "To receive bonus resources, please:",
+          "disableAdBlocker": "Disable ad blocker for this site",
+          "addToWhitelist": "Add this site to your ad blocker whitelist",
+          "refreshAndTry": "Refresh the page and try again",
+          "ok": "OK"
+        }
+      },
+      "ru": {
+        "startScreen": {
+            "title": "Кошмар",
+            "startBtn": "Начать",
+            "resumeBtn": "Продолжить",
+            "howBtn": "Как играть"
+          },
+        "sliderLevels": {
+          "difficultySlider": [
+            [0,   0,  "Покой"],
+            [1,  25,  "Тренировка"],
+            [26, 50,  "Лёгкая"],
+            [51, 75,  "Нормальная"],
+            [76,100, "Сложная"],
+            [101,125,"Жестокая"],
+            [126,150,"Брутальная"],
+            [151,175,"Садистская"],
+            [176,200,"Кошмар"]
+          ],
+          "breathSlider": [
+            [0,  20,  "Штиль"],
+            [20, 50,  "Лёгкая"],
+            [50, 75,  "Умеренная"],
+            [80,100, "Шквал"]
+          ],
+          "reinforcementsSlider": [
+            [0,   1,   "Нет"],
+            [1,  20,   "Редкие"],
+            [21, 50,   "Средние"],
+            [51, 80,   "Сильные"],
+            [81,100,   "Могучие"]
+          ]
+        },
+        "sidebarText": {
+          "Fld":    "На поле:    ",
+          "Income": "Доход:      ",
+          "Res":    "Резерв:     ",
+          "Ally":   "От союзников",
+          "You": "ВЫ:  ",
+          "Ai": "ИИ: ",
+          "s": "с",
+          "avgTime": "Ср.время≈",
+          "gameOverWin": "ПОБЕДА",
+          "gameOverLose": "ПОРАЖЕНИЕ",
+          "caravan": "Караван",
+          "resources": "ресурсов",
+          "watchAd": "Захватить караван (реклама)",
+          "ad": "Реклама",
+          "adReward": "Получить награду",
+          "adSystemDisabled": "Рекламная система отключена блокировщиком рекламы",
+          "enableAdsForBonus": "Включите рекламу, чтобы получить бонусные ресурсы",
+          "advertisementBlocked": "Реклама заблокирована",
+          "adBlockerMessage": "Ваш блокировщик рекламы помешал рекламе отображаться.",
+          "toReceiveBonus": "Чтобы получить бонусные ресурсы, пожалуйста:",
+          "disableAdBlocker": "Отключите блокировщик рекламы для этого сайта",
+          "addToWhitelist": "Add this site to your ad blocker whitelist",
+          "refreshAndTry": "Refresh the page and try again",
+          "ok": "OK"
+        }
+      }
+    }
+    </script>
+    
+  <!-- ——— MAIN ENTRY POINT (unchanged) ——— -->
+  <!-- Единственная кнопка запуска -->
+  <style>
+    #launchOverlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #launchOverlay button {
+      font-size: 3rem;
+      padding: 1rem 2rem;
+      color: #fff;
+      background: #6a1b9a;
+      border: none;
+      border-radius: .5rem;
+    }
+    #launchOverlay button:active { background: #4a148c; }
+  </style>
+
+
+  <!-- GamePush SDK для показа рекламы с обработкой ошибок -->
+  <script>
+    // Инициализация GamePush согласно официальной документации
+    window.onGPInit = function (gp) {
+      console.log('🎯 GamePush SDK инициализирован успешно');
+      console.log('🎯 GamePush объект:', gp);
+      console.log('🎯 GamePush.ads доступно:', !!gp.ads);
+      
+      // Делаем gp доступным глобально
+      window.gp = gp;
+      
+      // Ждем готовности игрока (согласно документации)
+      gp.player.ready.then(() => {
+        console.log('🎯 GamePush Player готов');
+        console.log('🎯 GamePush.ads методы:', Object.keys(gp.ads || {}));
+      }).catch(error => {
+        console.warn('🎯 GamePush Player error:', error);
+      });
+    };
+    
+    // Отладочная информация о загрузке скрипта
+    console.log('🎯 Начинаем загрузку GamePush SDK...');
+    console.log('🎯 URL SDK:', 'https://gamepush.com/sdk/gamepush.js?projectId=21999&publicToken=S7OCm7ppwMK1bUxDsAhABCzflwUSNlls&callback=onGPInit');
+    console.log('🎯 Callback function onGPInit определена:', typeof window.onGPInit);
+    
+    // Обработка ошибок загрузки SDK
+    window.addEventListener('error', function(e) {
+      if (e.filename && e.filename.includes('gamepush')) {
+        console.warn('🎯 GamePush SDK заблокирован или недоступен');
+        console.warn('🎯 Ошибка загрузки:', e.message);
+        console.warn('🎯 Полная ошибка:', e);
+        // Создаем заглушку для предотвращения ошибок
+        if (!window.gp) {
+          window.gp = {
+            ads: {
+              isFullscreenAvailable: () => Promise.resolve(false),
+              showFullscreen: () => Promise.reject(new Error('GamePush SDK not available'))
+            },
+            player: {
+              ready: Promise.resolve()
+            }
+          };
+        }
+      }
+    });
+    
+    // Дополнительная проверка через 3 секунды
+    setTimeout(() => {
+      if (typeof window.gp === 'undefined') {
+        console.warn('🎯 GamePush не загрузился за 3 секунды - возможно заблокирован');
+        console.warn('🎯 Создаем заглушку для корректной работы игры');
+        window.gp = {
+          ads: {
+            isFullscreenAvailable: () => Promise.resolve(false),
+            showFullscreen: () => Promise.reject(new Error('GamePush SDK timeout'))
+          },
+          player: {
+            ready: Promise.resolve()
+          }
+        };
+      } else {
+        console.log('🎯 GamePush загружен успешно через 3 секунды');
+        console.log('🎯 Проверяем методы рекламы:');
+        console.log('  - isFullscreenAvailable:', typeof window.gp.ads?.isFullscreenAvailable);
+        console.log('  - showFullscreen:', typeof window.gp.ads?.showFullscreen);
+        console.log('  - isRewardedAvailable:', typeof window.gp.ads?.isRewardedAvailable);
+        console.log('  - showRewardedVideo:', typeof window.gp.ads?.showRewardedVideo);
+      }
+    }, 3000);
+    
+    // Проверяем через 1 секунду тоже
+    setTimeout(() => {
+      console.log('🎯 Промежуточная проверка (1 сек):', typeof window.gp);
+    }, 1000);
+  </script>
+  
+  <!-- GamePush SDK - правильный способ подключения согласно документации -->
+  <script async src="https://gamepush.com/sdk/gamepush.js?projectId=21999&publicToken=S7OCm7ppwMK1bUxDsAhABCzflwUSNlls&callback=onGPInit"></script>
+
+  <!-- Точка входа для Vite -->
+
+</body>
+</html>
